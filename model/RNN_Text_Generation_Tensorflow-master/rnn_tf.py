@@ -10,7 +10,7 @@ import random
 import time
 
 import numpy as np
-import tensorflow as t
+import tensorflow as tf
 
 class ModelNetwork:
     """
