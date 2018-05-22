@@ -41,12 +41,12 @@ class Network:
                 tf.contrib.rnn.BasicLSTMCell(
                     self.lstm_size,
                     forget_bias=1.0,
-                    state_is_tuple = True
+                    state_is_tuple = False
                 ) for i in range(self.num_layers)
             ]
             self.lstm = tf.contrib.rnn.MultiRNNCell(
                 self.lstm_cells,
-                state_is_tuple=False
+                state_is_tuple = False
             )
             # Iteratively compute output of recurrent network
             outputs, self.lstm_new_state = tf.nn.dynamic_rnn(
@@ -84,7 +84,7 @@ class Network:
             )
             y_batch_long = tf.reshape(self.y_batch, [-1, self.out_size])
             self.cost = tf.reduce_mean(
-                tf.nn.softmax_cross_entropy_with_logits_v2(
+                tf.nn.softmax_cross_entropy_with_logits(
                     logits=network_output,
                     labels=y_batch_long
                 )
