@@ -222,15 +222,15 @@ def main():
     data, vocab = load_data(args.input_file)
 
     in_size = out_size = len(vocab)
-    lstm_size = 256  # 128
+    lstm_size = 128  # 128
     num_layers = 2
     batch_size = 64  # 128
-    time_steps = 100  # 50
+    time_steps = 10  # 50
 
     NUM_TRAIN_BATCHES = 20000
 
     # Number of test characters of text to generate after training the network
-    LEN_TEST_TEXT = 500
+    LEN_TEST_TEXT = 50
 
     # Initialize the network
     config = tf.ConfigProto()

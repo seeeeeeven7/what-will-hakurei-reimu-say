@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-allfile = open('talk_in_game/all.txt', 'w', encoding = 'utf8')
+allfile = open('talk_in_game/all_withoutspace.txt', 'w', encoding = 'utf8')
 
 def crawl(url, save):
     r = requests.get(url)
