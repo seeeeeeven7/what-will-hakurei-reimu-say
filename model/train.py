@@ -160,7 +160,7 @@ def main():
     time_steps = 5
     learning_rate = 0.003
 
-    NUM_TRAIN_BATCHES = 20000
+    NUM_TRAIN_BATCHES = 200000
 
     # Number of test characters of text to generate after training the network
     LEN_TEST_TEXT = 50

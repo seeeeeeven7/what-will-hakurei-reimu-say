@@ -110,7 +110,6 @@ class Network:
         self.lstm_last_state = next_lstm_state[0]
         return out[0][0]
 
-
 def encode1hot(s, vocab):
     embed = np.zeros((len(s), len(vocab)))
     cnt = 0
@@ -136,11 +135,31 @@ def load_data(input):
         lines[index] = encode1hot(line, vocab)
     return lines, vocab
 
+def predict_random(network, lines, vocab, in_size):
+
+    # Number of test characters of text to generate after training the network
+    LEN_TEST_TEXT = 20
+
+    # Choose first character randomly
+    line = random.choice(lines)
+
+    out = network.run_step(np.reshape(line[0], [1, in_size]), True)
+    gen_str = vocab[np.argmax(line[0])]
+
+    for i in range(LEN_TEST_TEXT):
+        element = np.random.choice(range(len(vocab)), p = out)
+        gen_str += vocab[element]
+        out = network.run_step(encode1hot(vocab[element], vocab), False)
+
+    return gen_str
+
+
 def main():
 
     # Files
     data_file = '../data/talk_in_game/all_withoutspace.txt'
     save_file = 'saved/model.ckpt'
+    out_file = open('gen_str.log', 'w', encoding = 'utf8')
 
     # Load the data
     lines, vocab = load_data(data_file)
@@ -152,11 +171,6 @@ def main():
     batch_size = 64
     time_steps = 5
     learning_rate = 0.003
-
-    NUM_TRAIN_BATCHES = 20000
-
-    # Number of test characters of text to generate after training the network
-    LEN_TEST_TEXT = 20
 
     # Initialize the network
     config = tf.ConfigProto()
@@ -171,26 +185,14 @@ def main():
         learning_rate = learning_rate,
         name = "char_rnn_network"
     )
+    
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver(tf.global_variables())
-    saver.restore(sess, save_file)
 
-    #     TEST_PREFIX = TEST_PREFIX.lower()
-    TEST_PREFIX = '巫女'
-    for i in range(len(TEST_PREFIX)):
-        out = network.run_step(encode1hot(TEST_PREFIX[i], vocab), i == 0)
-
-    print("Sentence:")
-    gen_str = TEST_PREFIX
-    for i in range(LEN_TEST_TEXT):
-        # Sample character from the network according to the generated
-        # output probabilities.
-        element = np.random.choice(range(len(vocab)), p=out)
-        gen_str += vocab[element]
-        out = network.run_step(encode1hot(vocab[element], vocab), False)
-
-    print(gen_str)
-
+    for i in range(20):
+        saver.restore(sess, save_file)
+        gen_str = predict_random(network, lines, vocab, in_size)
+        print(gen_str, file = out_file)
 
 if __name__ == "__main__":
     main()
